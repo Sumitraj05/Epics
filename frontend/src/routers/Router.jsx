@@ -3,7 +3,12 @@ import App from "../App";
 import Home from "../component/Home";
 import Service from "../component/Service";
 import About from "../component/About";
-import Contact from "../component/Contact";
+import Team from "../component/Team"
+import Login from "../component/Login";
+import Signup from "../component/SignUp";
+import Feature1 from "../component/Feature1";
+import Feature2 from "../component/Feature2";
+import Feature3 from "../component/Feature3";
 
 
 
@@ -26,8 +31,28 @@ const Router = createBrowserRouter([
             },
             {
                 path: "/team",
-                element: <Contact/>
-            }
+                element: <Team/>
+            },
+            {
+                path:"/login",
+                element:<Login/>
+            },
+            {
+                path:"/signup",
+                element:<Signup/>
+            },
+            {
+                path:"/feature1",
+                element:<Feature1/>
+            },
+            {
+                path:"/feature2",
+                element:<Feature2/>
+            },
+            {
+                path:"/feature3",
+                element:<Feature3/>
+            },
         ]
     }
 ])
