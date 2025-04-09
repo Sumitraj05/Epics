@@ -1,24 +1,28 @@
 import toast from 'react-hot-toast';
 
 const httpAction = async (data) => {
-    
+    try {
         const response = await fetch(data.url, {
             method: data.method || 'GET',
             body: data.formData || (data.body ? data.body : null),
             headers: data.formData ? {} : { 'Content-Type': 'application/json' },
-            credentials: "include",
+            credentials: 'include',
         });
 
         const result = await response.json();
 
         if (!response.ok) {
-            throw new Error(result.message);
+            // If the response is not OK, throw an error with the message from the server
+            throw new Error(result.message || 'Something went wrong');
         }
 
-        // console.log("API Response:", result);
         return result;
-
-    
+    } catch (error) {
+        // If an error occurs, log it and show an error toast
+        console.error('API Error:', error);
+        
+        throw error; // Re-throw the error for further handling if needed
+    }
 };
 
 export default httpAction;

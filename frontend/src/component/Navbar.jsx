@@ -1,90 +1,140 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
 import useProvideHooks from "../hooks/useProvideHooks";
 import httpAction from "../utils/httpAction";
 import apis from "../api/apis";
 import toast from "react-hot-toast";
-
+import logo from "../assets/img/logo/crime_logo.jpg";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { userData, setUserdata } = useContext(AuthContext);
   const { navigate } = useProvideHooks();
+
+  // Logout function
   const logout = async () => {
     try {
       await httpAction({
         url: apis().logout,
         method: "POST",
-        credentials: 'include'
+        credentials: "include",
       });
 
       setUserdata(null);
-
-      toast.success("User Logged Out Succuessfully")
-      navigate('/')
+      toast.success("User Logged Out Successfully");
+      navigate("/");
     } catch (error) {
       console.error("Logout Error:", error);
     }
   };
+
   return (
-    <header className="bg-blue-900 text-white shadow-md">
-      <div className="container mx-auto px-10 py-3 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold">Finexo</Link>
+    <div className="navbar-area sticky">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-12">
+            <nav className="navbar navbar-expand-lg">
+              {/* Logo */}
+              <Link className="navbar-brand" to="/">
+                <img src={logo} alt="Logo" />
+              </Link>
 
-        {/* Mobile menu button */}
-        <button
-          className="lg:hidden text-white text-2xl"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <FaTimes /> : <FaBars />}
-        </button>
+              {/* Mobile Menu Toggle Button */}
+              <button
+                className="navbar-toggler"
+                type="button"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-expanded={menuOpen ? "true" : "false"}
+                aria-label="Toggle navigation"
+              >
+                {menuOpen ? <FaTimes /> : <FaBars />}
+              </button>
 
-        {/* Navigation Menu */}
-        <nav
-          className={`lg:flex items-center space-x-6 absolute lg:relative top-16 left-0 lg:top-0 bg-blue-900 w-full lg:w-auto lg:bg-transparent p-5 lg:p-0 transition-all duration-300 ease-in-out ${isOpen ? "block z-50" : "hidden lg:block"
-            }`}
-        >
-          <ul className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-6">
-            <li><Link to="/" className="hover:text-gray-300" onClick={() => setIsOpen(false)}>Home</Link></li>
-            <li><Link to="/about" className="hover:text-gray-300" onClick={() => setIsOpen(false)}>About</Link></li>
-            <li><Link to="/service" className="hover:text-gray-300" onClick={() => setIsOpen(false)}>Services</Link></li>
-            <li><Link to="/team" className="hover:text-gray-300" onClick={() => setIsOpen(false)}>Team</Link></li>
+              {/* Navbar Links */}
+              <div
+                className={`collapse navbar-collapse sub-menu-bar ${
+                  menuOpen ? "show" : ""
+                }`}
+                id="navbarSupportedContent"
+              >
+                <ul id="nav" className="navbar-nav ml-auto">
+                  <li className="nav-item">
+                    <Link
+                      className="page-scroll"
+                      to="/"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="page-scroll"
+                      to="/about"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      About
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="page-scroll"
+                      to="/service"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Services
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="page-scroll"
+                      to="/blog"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Blog
+                    </Link>
+                  </li>
 
-            {
-              userData ? 
-              <li><Link to="/feature1" className="hover:text-gray-300 font-semibold" onClick={() => setIsOpen(false)}>Feature 1 </Link></li>
-              :""
-            }
-            {
-              userData ? 
-              <li><Link to="/feature2" className="hover:text-gray-300 font-semibold" onClick={() => setIsOpen(false)}>Feature 2 </Link></li>
-              :""
-            }
-            {
-              userData ? 
-              <li><Link to="/feature3" className="hover:text-gray-300 font-semibold" onClick={() => setIsOpen(false)}>Feature 3 </Link></li>
-              :""
-            }
+                  {/* Conditional Features for Logged-in Users */}
+                  {userData && (
+                    <>
+                      <li className="nav-item">
+                        <Link
+                          className="page-scroll"
+                          to="/analyzer"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Analyzer
+                        </Link>
+                      </li>
+                    </>
+                  )}
 
-            {userData ? (
-              <li>
-                <button onClick={logout} className="flex items-center hover:text-gray-300">
-                  <FaUser className="mr-2" /> Logout
-                </button>
-              </li>
-            ) : (
-              <li>
-                <Link to="/login" className="flex items-center hover:text-gray-300" onClick={() => setIsOpen(false)}>
-                  <FaUser className="mr-2" /> Login
-                </Link>
-              </li>
-            )}
-          </ul>
-        </nav>
+                  {/* Login/Logout Button */}
+                  <li className="nav-item">
+                    {userData ? (
+                      <button onClick={logout} className="page-scroll">
+                        <FaUser  /> Logout
+                      </button>
+                    ) : (
+                      <Link
+                        className="page-scroll"
+                        to="/login"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <FaUser /> Login
+                      </Link>
+                    )}
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
       </div>
-    </header>
+    </div>
   );
 };
 

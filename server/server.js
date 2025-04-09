@@ -23,8 +23,6 @@ app.use(cors({
 }));
 
 // routes 
-
-
 app.use('/user', accountRoutes); 
 
 const port = process.env.PORT 
